@@ -28,7 +28,7 @@ class Question:
     def SetUserAnswer(answer1):
         self.user_answer = answer1
     def GetDirectory():
-        return "adsfh"
+        return "a"
     
 def UpdateTestView():
     global pixmap, label, Questions, directories, button_a, reviewmode
@@ -75,15 +75,15 @@ def UpdateTestView():
         elif ansa == "G":
             button_g.setStyleSheet("background-color : green;")
         
-def NewQuestion(*answerneed):
+def NewQuestion(*answerneed): # optional argument to handle answer button
     global answer
     global directories
     global pixmap
     global current_question_directory
     global showing_answer
     global random_paper_choice, button_answer
-    if answerneed:
-        print("GOT HERE")
+    if answerneed: # instead of making a new method to handle show answer button, its done here
+        # shows or hides the answer of the current question
         if showing_answer == True:
             button_answer.setText("Show Answer")
             pixmap = QPixmap(r"assets\Questions\\" + random_paper_choice + "\\" + current_question_directory)
@@ -96,16 +96,14 @@ def NewQuestion(*answerneed):
             label.setPixmap(pixmap)
             showing_answer = True
     else:
-        print("here")
+        # picks a new random question
         random_paper_choice = random.choice(directories)
-        print(random_paper_choice)
         current_question_directory = random.choice(os.listdir(r"assets\Questions" + "\\" + random_paper_choice))
-        print(current_question_directory)
         pixmap = QPixmap(r"assets\Questions\\" + random_paper_choice + "\\" + current_question_directory)
         current_answer = current_question_directory.strip(".jpeg").split("_")[-1]
         answer = current_answer
         label.setPixmap(pixmap)
-
+# makes question objects and puts them in a list for all questions in a test paper directory
 def SetUpTest(directory):
     f = sorted(os.listdir('assets\Questions\\' + directory))
 
@@ -115,9 +113,7 @@ def SetUpTest(directory):
         index = int(t.strip(".jpeg").split("_")[-2]) - 1
         Questions.pop(index)
         Questions.insert(index, Question('assets\Questions\\' + directory + '\\' + t, 'assets\Answers\\' + t, t.strip(".jpeg").split("_")[-1]))
-        
-    #Questions = sorted(Questions, key = lambda Questions.index)
-    print(Questions)
+
     for q in Questions:
         print(q.directory)
 
@@ -146,18 +142,18 @@ def ShowHideAnswer():
             pixmap = QPixmap(Questions[TestQIndex].directory)
             label.setPixmap(pixmap)
             showing_answer = False
+            
 def labelscore(num):
     global vbox
     scorelabel = QLabel(str(num))
     vbox.addWidget(scorelabel)
 
-    
+ # code for most of the buttons to take them to their functions
 def button_click(sender):
     global Questions, TestQIndex, reviewmode
-    print("here")
+
     if Test_mode == False:
         if sender.text() == answer:
-            print("correct")
             NewQuestion()
         elif sender.text() == "Skip":
             NewQuestion()
@@ -242,10 +238,9 @@ def Start():
         directories.append("2021_P1")
     if P2_2021.isChecked():
         directories.append("2021_P2")
-    print("here1")
+
     window1.hide()
-    #window.setMinimumWidth(700)
-    #window.setMinimumHeight(900)
+
     window.setFixedSize(700, 900)
     window.show()
     window.setCentralWidget(container)
